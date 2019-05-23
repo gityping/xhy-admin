@@ -50,6 +50,6 @@ export default {
     top:60px;
     backgroun:#00000000;
     width:100%;
-    height:100%;
+    height:calc(100vh - 60px);
  }
 </style>
