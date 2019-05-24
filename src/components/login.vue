@@ -18,7 +18,7 @@
         clickMode="push"
       >
     </vue-particles>
-    <div class="contentdiv">
+    <div class="contentdivs">
       <div class="login-box">
         <div class="login-con">
           <div class="content-login">
@@ -96,7 +96,7 @@ export default {
 }
 </script>
 <style>
-.contentdiv {
+.contentdivs {
   position:absolute;
   left:1px;
   top:160px;

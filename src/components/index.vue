@@ -44,10 +44,8 @@
 .contentdiv {
     position:absolute;
     left:1px;
-    top:60px;
-    backgroun:#00000000;
     width:100%;
-    height:calc(100vh - 60px);
+    /* height:calc(100vh - 60px); */
  }
 .layout {
   background: #00000000;
