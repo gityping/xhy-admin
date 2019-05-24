@@ -11,7 +11,10 @@ import auth from './utils/auth'
 import axios from 'axios'
 import animated from 'animate.css'
 import VueParticles from 'vue-particles'
+import EffectInput from 'effect-input'
+import 'effect-input/dist/index.css'
 
+Vue.use(EffectInput)
 Vue.use(VueParticles)
 Vue.use(animated)
 Vue.use(iView, {locale})

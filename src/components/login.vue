@@ -31,12 +31,12 @@
             <div class="form-con">
               <Form ref="loginForm" :model="form" :rules="rules">
                 <FormItem prop="account">
-                  <i-input v-model="form.account" size="large" placeholder="请输入用户名">
-                  </i-input>
+                  <!-- <effect-input v-model="form.account" type="jiro" label="用户名" class="inputdiv"></effect-input> -->
+                  <i-input v-model="form.account" size="large" placeholder="请输入用户名"/>
                 </FormItem>
                 <FormItem prop="password">
-                  <i-input type="password" v-model="form.password" size="large" placeholder="6~32位密码">
-                  </i-input>
+                  <!-- <effect-input v-model="form.password" type="jiro" label="密码" class="inputdiv"></effect-input> -->
+                  <i-input type="password" v-model="form.password" size="large" placeholder="6~32位密码"/>
                 </FormItem>
                 <FormItem>
                   <Button :loading="loading" @click="handleSubmit" type="primary" size="large" long>账户登录</Button>
@@ -104,6 +104,10 @@ export default {
   width:100%;
   height:300px
 }
+.inputdiv {
+  /* height: 30px; */
+  margin-top: 30px;
+}
 .login {
   width: calc(100vw);
   /* height: calc(100vh); */
@@ -134,8 +138,12 @@ export default {
   width: 440px;
   padding: 60px;
   display: block;
-  background: #fff;
+  background: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558699906741&di=e54d31597c7d01301545eb7c7427e2d4&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01682d57b3bf630000018c1bb4f7c3.png%401280w_1l_2o_100sh.png") top center no-repeat;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-size: cover;
   float: left;
+  padding-bottom: 1px;
 }
 p img {
   width: 231px;
@@ -151,6 +159,7 @@ p img {
   align-items: center;
   justify-content: space-between;
   cursor: default;
+  color: #ffffff;
 }
 .login-header {
   font-size: 16px;
