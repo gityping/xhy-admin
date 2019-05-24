@@ -3,12 +3,12 @@
     <div class="layout-content-menu scrollbar">
       <Menu ref="menu" :active-name="activeName" width="auto" :open-names="openNames">
         <Submenu :name="submenu.name" v-for="submenu in menuList" :key="submenu.name">
-          <template slot="title">
+          <template slot="title" style="">
               <Icon :type="submenu.icon"></Icon>
-              <span style="font-weight: 700;font-size: 12px;">{{submenu.text}}</span>
+              <span style="font-weight: 700;font-size: 12px;padding-right: 60px;text-align:left;">{{submenu.text}}</span>
           </template>
           <a v-for="item in submenu.children" :key="item.name" :href="getSelect(item.name)">
-            <Menu-item :name="item.name">{{item.text}}</Menu-item>
+            <Menu-item :name="item.name" style="font-size: 12px;text-align:left;margin-left: 15px;">{{item.text}}</Menu-item>
           </a>
         </Submenu>
       </Menu>

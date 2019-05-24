@@ -10,15 +10,47 @@
       </div>
     </Menu>
     <div class="layout-content">
+      <div class="topdiv">
+        <vue-particles
+          color="#dedede"
+          :particleOpacity="0.7"
+          :particlesNumber="100"
+          shapeType="circle"
+          :particleSize="4"
+          linesColor="#dedede"
+          :linesWidth="1"
+          :lineLinked="true"
+          :lineOpacity="0.4"
+          :linesDistance="150"
+          :moveSpeed="5"
+          :hoverEffect="true"
+          hoverMode="grab"
+          :clickEffect="true"
+          clickMode="push"
+        >
+        </vue-particles>
+      </div>
+    <div class="contentdiv">
       <router-view/>
     </div>
+  </div>
   </div>
 </template>
 
 <style>
-
+.topdiv {
+ height:calc(100vh - 60px);
+}
+.contentdiv {
+    position:absolute;
+    left:1px;
+    top:60px;
+    backgroun:#00000000;
+    width:100%;
+    height:calc(100vh - 60px);
+ }
 .layout {
-  background: #f5f7f9;
+  background: #00000000;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -71,8 +103,8 @@
 }
 
 .layout-content {
-  height: cacl(100vh - 60px);
-  background-color: #ffffff;
+  height: 100px;
+  background-color: #00000000;
   overflow: hidden;
   flex: 1;
   display: flex;

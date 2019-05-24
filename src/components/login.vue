@@ -85,7 +85,7 @@ export default {
       that.loading = true
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          that.$router.push({ path: '/pages/home' })
+          that.$router.push({ path: '/pages/adminManager' })
           that.loading = false
         } else {
           that.loading = false
