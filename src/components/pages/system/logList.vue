@@ -2,8 +2,8 @@
    <div>
      <div class="layout-breadcrumb">
       <Breadcrumb class="breadcrumb">
-        <BreadcrumbItem>用户管理</BreadcrumbItem>
-        <BreadcrumbItem>普通用户管理</BreadcrumbItem>
+        <BreadcrumbItem>系统管理</BreadcrumbItem>
+        <BreadcrumbItem>日志列表</BreadcrumbItem>
       </Breadcrumb>
      </div>
      <div class="layout-content-detail">

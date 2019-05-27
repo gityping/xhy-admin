@@ -125,7 +125,7 @@ export default {
 .login-box {
   width: 100%;
   height: 100%;
-  background: url("http://image.govlan.com/bg-login.png") top center no-repeat;
+  /* background: url("http://image.govlan.com/bg-login.png") top center no-repeat; */
   padding-top: 80px;
 }
 .login-con {
@@ -138,7 +138,7 @@ export default {
   width: 440px;
   padding: 60px;
   display: block;
-  background: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1558699906741&di=e54d31597c7d01301545eb7c7427e2d4&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01682d57b3bf630000018c1bb4f7c3.png%401280w_1l_2o_100sh.png") top center no-repeat;
+  background: url("./../assets/login6.png") top center no-repeat;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-size: cover;
@@ -159,7 +159,7 @@ p img {
   align-items: center;
   justify-content: space-between;
   cursor: default;
-  color: #ffffff;
+  color: #666;
 }
 .login-header {
   font-size: 16px;

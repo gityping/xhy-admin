@@ -2,8 +2,8 @@
    <div>
      <div class="layout-breadcrumb">
       <Breadcrumb class="breadcrumb">
-        <BreadcrumbItem>用户管理</BreadcrumbItem>
-        <BreadcrumbItem>普通用户管理</BreadcrumbItem>
+        <BreadcrumbItem>内容管理</BreadcrumbItem>
+        <BreadcrumbItem>天生有才</BreadcrumbItem>
       </Breadcrumb>
      </div>
      <div class="layout-content-detail">
