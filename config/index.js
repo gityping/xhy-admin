@@ -11,12 +11,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/v2': {
-        target: 'http://xxxx.com:80/',
+      '/': {
+        target: 'https://xhy-api.vyeahcorp.com/',
         changeOrigin: true,
         secure: false,
         headers: {
-          Referer: 'http://xxxx.com:80/'
+          Referer: 'https://xhy-api.vyeahcorp.com/'
         }
       }
     },

@@ -33,6 +33,12 @@ export default {
       component: () => import('@/components/pages/goods/goodsList')
     },
     {
+      path: 'addGoods',
+      name: '/goods/addGoods',
+      text: '添加商品',
+      component: () => import('@/components/pages/goods/addGoods')
+    },
+    {
       path: 'orderList',
       name: 'orderList',
       text: '订单列表',
@@ -130,8 +136,8 @@ export default {
     }
   ],
   beforeEnter (to, from, next) {
-    // var token = localStorage.token
-    var token = true
+    var token = localStorage.token
+    // var token = true
     if (token) {
       next()
     } else {

@@ -9,7 +9,7 @@
      <div class="layout-content-detail">
        <div class="layout-search">
          <div style="float:left;">
-            <Button shape="circle" type="primary" icon="plus" @click="addCoupon">添加用户</Button>
+            <Button shape="circle" type="primary" icon="plus" @click="addGoods">添加商品</Button>
           </div>
        </div>
        <div class="table">
@@ -152,6 +152,9 @@ export default {
     },
     changePage (page) {
 
+    },
+    addGoods () {
+      this.$router.push({ path: '/pages/addGoods' })
     }
   }
 }

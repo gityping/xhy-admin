@@ -20,7 +20,7 @@ Vue.use(animated)
 Vue.use(iView, {locale})
 
 if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = 'http://xxxx.com:80/'
+  axios.defaults.baseURL = 'https://xhy-api.vyeahcorp.com/'
   // axios.defaults.headers.common['Authorization'] = auth.get().token
 }
 axios.interceptors.request.use((config) => {

@@ -85,10 +85,34 @@ export default {
       that.loading = true
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          that.$router.push({ path: '/pages/adminManager' })
-          that.loading = false
+          this.$http.post('/admin/v1/token', that.form).then(res => {
+            if (res.status === 200) {
+              console.log(res.data.token)
+              sessionStorage.setItem('token', res.data.token)
+              that.token = res.data.token
+              that.$auth.saveToken(that.token)
+              that.$router.push({ path: '/pages/user/adminManager' })
+              // that.getLoginedAdminUserInfo()
+              that.loading = false
+            } else {
+              this.$Message.info(res.data)
+              that.loading = false
+            }
+          })
         } else {
           that.loading = false
+        }
+      })
+    },
+    getLoginedAdminUserInfo () {
+      // const that = this
+      this.$http.get('/admin/v1/user').then((res) => {
+        if (res.status === 200) {
+          var adminUser = res.data
+          console.log(adminUser)
+          if (adminUser) {
+            localStorage.adminUser = JSON.stringify(adminUser)
+          }
         }
       })
     }

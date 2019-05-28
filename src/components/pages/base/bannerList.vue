@@ -20,6 +20,58 @@
         <Page :current="parseInt(pageInfo.currentPage)" show-elevator :total="parseInt(pageInfo.allNum)" :page-size="pageSize" @on-change="changePage"></Page>
       </div>
      </div>
+     <Modal
+      v-model="addModal"
+      width='480px'
+      title="添加横幅"
+      ok-text="保存"
+      @on-ok="addTobanner"
+      cancel-text="取消">
+      <Form :label-width="80">
+        <FormItem label="设置连接">
+          <Input v-model="addToform.url" placeholder="请输入链接地址"/>
+        </FormItem>
+        <FormItem label="选择栏目">
+          <Select v-model="addToform.columnId" placeholder="请选择栏目">
+            <Option v-for="(item, index) in columnList" :value="item.id" :key="index">{{item.name}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="横幅图片">
+          <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
+            <template v-if="item.status === 'finished'">
+              <img :src="item.url">
+              <div class="demo-upload-list-cover">
+                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+              </div>
+            </template>
+            <template v-else>
+              <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+            </template>
+          </div>
+          <Upload
+            v-show="!uploadList || uploadList.length == 0"
+            ref="upload"
+            :show-upload-list="false"
+            :default-file-list="defaultList"
+            :on-success="handleSuccess"
+            :on-error="handleError"
+            :format="['ico', 'png', 'jpg', 'jpeg']"
+            :max-size="2048"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            :before-upload="handleBeforeUpload"
+            multiple
+            type="drag"
+            action="https://upload.qiniup.com"
+            :data="{token: qiniuToken}"
+            style="display: inline-block;width:100px;">
+            <div style="width: 100px;height:58px;line-height: 58px;">
+                <Icon type="ios-camera" size="20"></Icon>
+            </div>
+          </Upload>
+        </FormItem>
+      </Form>
+    </Modal>
    </div>
 </template>
 <script>
