@@ -92,19 +92,12 @@
               </FormItem>
             </i-col>
           </Row>
-          <!-- <Row>
-            <i-col>
-              <FormItem label="商品规格">
-                <Button type="success" @click="addGoodsRules">添加商品规格</Button>
-              </FormItem>
-            </i-col>
-          </Row> -->
           <Row>
             <i-col span="8">
               <FormItem label="上架/下架" :label-width="70">
                 <RadioGroup v-model="addToform.allow_sale">
-                  <Radio label="true">上架</Radio>
-                  <Radio label="false">下架</Radio>
+                  <Radio label="1">上架</Radio>
+                  <Radio label="2">下架</Radio>
                 </RadioGroup>
               </FormItem>
             </i-col>
@@ -167,36 +160,36 @@
                 <div>
                   <Row>
                     <i-col span="2">{{this.rulesTitle}}</i-col>
-                    <i-col span="2">name</i-col>
-                    <i-col span="2">purchase_price</i-col>
-                    <i-col span="2">sale_price</i-col>
-                    <i-col span="2">market_price</i-col>
-                    <i-col span="2">warehousing_count</i-col>
-                    <i-col span="2">platform_profit</i-col>
-                    <i-col span="2">market_profit</i-col>
-                    <i-col span="2">market_no</i-col>
-                    <i-col span="2">specs</i-col>
-                    <i-col span="2">remark</i-col>
-                    <i-col span="2">cover</i-col>
+                    <!-- <i-col span="2">name</i-col> -->
+                    <i-col span="3">purchase_price</i-col>
+                    <i-col span="3">sale_price</i-col>
+                    <i-col span="3">market_price</i-col>
+                    <i-col span="3">warehousing_count</i-col>
+                    <!-- <i-col span="2">platform_profit</i-col> -->
+                    <!-- <i-col span="2">market_profit</i-col> -->
+                    <!-- <i-col span="2">market_no</i-col> -->
+                    <i-col span="3">specs</i-col>
+                    <!-- <i-col span="2">remark</i-col> -->
+                    <i-col span="3">cover</i-col>
                   </Row>
                   <Row v-for="(item, index) in detailsList" :key="index">
                     <i-col span="2">{{item}}</i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.name[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.purchase_price[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.sale_price[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_price[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.warehousing_count[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.platform_profit[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_profit[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_no[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.specs[index]" placeholder="请输入"/></i-col>
-                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.remark[index]" placeholder="请输入"/></i-col>
+                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.name[index]" placeholder="请输入"/></i-col> -->
+                    <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.purchase_price[index]" placeholder="请输入"/></i-col>
+                    <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.sale_price[index]" placeholder="请输入"/></i-col>
+                    <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.market_price[index]" placeholder="请输入"/></i-col>
+                    <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.warehousing_count[index]" placeholder="请输入"/></i-col>
+                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.platform_profit[index]" placeholder="请输入"/></i-col> -->
+                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_profit[index]" placeholder="请输入"/></i-col> -->
+                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_no[index]" placeholder="请输入"/></i-col> -->
+                    <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.specs[index]" placeholder="请输入"/></i-col>
+                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.remark[index]" placeholder="请输入"/></i-col> -->
                     <i-col>
-                      <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
-                        <template v-if="item.status === 'finished'">
-                          <img :src="item.url">
+                      <div class="demo-upload-list" v-for="item in 1" :key="item" style="width: 80px;height: 80px;line-height: 80px;">
+                        <template v-if="details.cover[index]">
+                          <img :src="details.cover[index]" style="width: 80px;height: 80px;line-height: 80px;">
                           <div class="demo-upload-list-cover" style="width: 80px;height: 80px;line-height: 80px;">
-                            <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                            <Icon type="ios-trash-outline" @click.native="handleRemoveSingle(item)"></Icon>
                           </div>
                         </template>
                         <template v-else>
@@ -204,17 +197,17 @@
                         </template>
                       </div>
                       <Upload
-                        v-show="!uploadList || uploadList.length == 0"
-                        ref="upload"
+                        v-show="!details.cover[index]"
+                        ref="uploadsingle"
                         :show-upload-list="false"
-                        :default-file-list="defaultList"
-                        :on-success="handleSuccess"
+                        :default-file-list="defaultList1"
+                        :on-success="handleSuccessSingle"
                         :on-error="handleError"
                         :format="['ico', 'png', 'jpg', 'jpeg']"
                         :max-size="2048"
                         :on-format-error="handleFormatError"
                         :on-exceeded-size="handleMaxSize"
-                        :before-upload="handleBeforeUpload"
+                        :before-upload="handleBeforeUploadSingle"
                         multiple
                         type="drag"
                         action="https://upload.qiniup.com"
@@ -270,17 +263,6 @@
             <Button type="primary" icon="md-add" @click="addItem" style="margin-left: 5px;margin-top:5px;"></Button>
           </Row>
         </FormItem>
-        <!-- <FormItem label="选择栏目">
-          <Select v-model="editForm.columnId" placeholder="请选择栏目">
-            <Option v-for="(item, index) in columnList" :value="item.id" :key="index">{{item.name}}</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="是否展示">
-          <RadioGroup v-model="editForm.isShow">
-            <Radio label="true">是</Radio>
-            <Radio label="false">否</Radio>
-          </RadioGroup>
-        </FormItem> -->
       </Form>
     </Modal>
   </div>
@@ -292,9 +274,10 @@ export default {
   components: { VueUEditor },
   data () {
     return {
-      qiniuToken: 'qZIAWsdx_3QNStX5Wpj7BSn4dWAWAsfed_tNiOXd:EWS8a0e6h26NhD7gOly3kO1cVNI=:eyJzY29wZSI6InhoeSIsImRlYWRsaW5lIjoxNTU5MTE5NDQyfQ==',
+      qiniuToken: '',
       uploadList: [],
       defaultList: [],
+      defaultList1: [],
       categoryList: [],
       addToform: {
         f_brand_id: '',
@@ -303,7 +286,7 @@ export default {
         cover: '',
         product_no: '',
         detail: '',
-        allow_sale: '',
+        allow_sale: '1',
         tag: '',
         market_price: '',
         remark: '',
@@ -336,11 +319,17 @@ export default {
         cover: []
       },
       detailsList: [],
-      priductDetailsList: []
+      priductDetailsList: [],
+      coverList: [],
+      pic: []
     }
   },
   mounted () {
     this.uploadList = this.$refs.upload.fileList
+    this.coverList = this.$refs.uploadsingle.fileList
+    console.log(this.$refs)
+    // console.log(this.coverList)
+
     this.getQiniuToken()
     // this.getCategories()
   },
@@ -410,10 +399,31 @@ export default {
       const fileList = this.$refs.upload.fileList
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
+    handleRemoveSingle (file) {
+      const fileList = this.$refs.uploadsingle.fileList
+      this.$refs.uploadsingle.fileList.splice(fileList.indexOf(file), 1)
+    },
     handleSuccess (res, file) {
       file.url = 'http://image.govlan.com/' + res.key
       file.name = res.key
       this.addToform.cover = file.name
+    },
+    handleSuccessSingle (res, file) {
+      console.log(res)
+      console.log(file)
+      file.url = 'http://image.govlan.com/' + res.key
+      file.name = res.key
+      this.coverList.push({
+        name: file.name,
+        url: file.url,
+        showProgress: false,
+        status: 'finished'
+      })
+      for (let i = 0; i < this.coverList.length; i++) {
+        this.details.cover[i] = this.coverList[i].url
+        this.pic[i] = this.coverList[i].name
+      }
+      console.log(this.details.cover)
     },
     handleError (error) {
       console.log(error)
@@ -433,6 +443,15 @@ export default {
     },
     handleBeforeUpload () {
       const check = this.uploadList.length < 5
+      if (!check) {
+        this.$Notice.warning({
+          title: '最多上传5个文件。'
+        })
+      }
+      return check
+    },
+    handleBeforeUploadSingle () {
+      const check = this.coverList.length < 50
       if (!check) {
         this.$Notice.warning({
           title: '只能上传一个文件。'
@@ -495,24 +514,28 @@ export default {
     },
     commit () {
       const that = this
+      console.log('-------------')
+      console.log(this.coverList)
+      console.log(this.uploadList)
+      console.log('-------------')
       console.log(this.details)
       var picList = []
       for (let i = 0; i < this.uploadList.length; i++) {
-        picList.push(this.uploadList.name)
+        picList.push(this.uploadList[i].name)
       }
       for (let i = 0; i < this.detailsList.length; i++) {
         this.priductDetailsList.push({
-          name: this.details.name[i] ? this.details.name[i] : '',
+          // name: this.details.name[i] ? this.details.name[i] : '',
           purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
           sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
           market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
           warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
-          platform_profit: this.details.platform_profit[i] ? this.details.platform_profit[i] : '',
-          market_profit: this.details.market_profit[i] ? this.details.market_profit[i] : '',
-          market_no: this.details.market_no[i] ? this.details.market_no[i] : '',
-          specs: this.details.specs[i] ? this.details.specs[i] : '',
-          remark: this.details.remark[i] ? this.details.remark[i] : '',
-          cover: this.details.cover[i] ? this.details.cover[i] : ''
+          // platform_profit: this.details.platform_profit[i] ? this.details.platform_profit[i] : '',
+          // market_profit: this.details.market_profit[i] ? this.details.market_profit[i] : '',
+          // market_no: this.details.market_no[i] ? this.details.market_no[i] : '',
+          specs: this.rulesValue ? this.rulesValue : '',
+          // remark: this.details.remark[i] ? this.details.remark[i] : '',
+          cover: this.details.cover[i] ? 'this.details.cover[i]' : ''
         })
       }
       console.log(this.priductDetailsList)
@@ -520,11 +543,10 @@ export default {
         f_brand_id: '1',
         s_brand_id: '3',
         name: this.addToform.name,
-        cover: this.addToform.cover,
+        cover: 'this.addToform.cover',
         product_no: this.addToform.product_no,
         detail: 'this.addToform.detail',
-        // allow_sale: this.addToform.allow_sale,
-        allow_sale: '1',
+        allow_sale: this.addToform.allow_sale,
         tag: this.addToform.tag,
         market_price: this.addToform.market_price,
         remark: this.addToform.remark,
@@ -557,6 +579,19 @@ export default {
       this.details.specs = []
       this.details.remark = []
       this.details.cover = []
+    },
+    strlen (str) {
+      var len = 0
+      for (var i=0; i<str.length; i++) {
+        var c = str.charCodeAt(i)
+        // 单字节加1
+        if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
+          len++
+        } else {
+          len += 2
+        }
+      }
+      return len
     }
   }
 }
