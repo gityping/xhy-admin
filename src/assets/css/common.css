@@ -449,3 +449,6 @@ h3 {
 .effect-input--jiro {
   margin-top: 3em;
 }
+.ivu-row {
+  z-index: 9;
+}

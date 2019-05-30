@@ -12,36 +12,43 @@
         <Form :label-width="60">
           <Row>
             <i-col span="8">
-              <FormItem label="新闻标题">
+              <!-- <FormItem label="新闻标题">
                 <Input v-model="addToform.title" placeholder="请输入新闻标题"/>
-              </FormItem>
-            </i-col>
-            <i-col span="8">
-              <FormItem label="新闻分类" style="margin-left:30px;">
+              </FormItem> -->
+              <FormItem label="一级分类" >
                 <Select
                   multiple
-                  v-model="addToform.categoryName">
+                  v-model="addToform.f_brand_id">
                   <Option v-for="(item, index) in categoryList" :value="item" :key="index">{{item}}</Option>
                 </Select>
               </FormItem>
             </i-col>
             <i-col span="8">
+              <FormItem label="二级分类" style="margin-left:30px;">
+                <Select
+                  multiple
+                  v-model="addToform.s_brand_id">
+                  <Option v-for="(item, index) in categoryList" :value="item" :key="index">{{item}}</Option>
+                </Select>
+              </FormItem>
+            </i-col>
+            <!-- <i-col span="8">
               <FormItem label="发表时间" style="margin-left:30px;">
                 <DatePicker type="datetime" placeholder="请设置发表日期" v-model="addToform.publishDate" style="width:100%"></DatePicker>
-                <!-- <DatePicker type="datetime" placeholder="请设置发表日期" style="width: 200px"></DatePicker> -->
+              </FormItem>
+            </i-col> -->
+          </Row>
+          <Row>
+            <i-col span="8">
+              <FormItem label="商品名称">
+                <Input v-model="addToform.name" placeholder="请输入商品名称"/>
+                <!-- <Input v-model="addToform.digest" type="textarea" :rows="3" placeholder="请输入新闻简介"/> -->
               </FormItem>
             </i-col>
           </Row>
-          <!-- <Row>
-            <i-col>
-              <FormItem label="新闻摘要">
-                <Input v-model="addToform.digest" type="textarea" :rows="3" placeholder="请输入新闻简介"/>
-              </FormItem>
-            </i-col>
-          </Row> -->
           <Row>
             <i-col>
-              <FormItem label="新闻封面">
+              <FormItem label="缩略图">
                 <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
                   <template v-if="item.status === 'finished'">
                     <img :src="item.url">
@@ -53,8 +60,9 @@
                     <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
                   </template>
                 </div>
+                  <!-- v-show="!uploadList || uploadList.length == 0" -->
                 <Upload
-                  v-show="!uploadList || uploadList.length == 0"
+                  v-show="uploadList.length < 5"
                   ref="upload"
                   :show-upload-list="false"
                   :default-file-list="defaultList"
@@ -78,41 +86,166 @@
             </i-col>
           </Row>
           <Row>
+            <i-col span="8">
+              <FormItem label="商品编号">
+                <Input v-model="addToform.product_no" placeholder="请输入商品编号"/>
+              </FormItem>
+            </i-col>
+          </Row>
+          <!-- <Row>
             <i-col>
               <FormItem label="商品规格">
+                <Button type="success" @click="addGoodsRules">添加商品规格</Button>
+              </FormItem>
+            </i-col>
+          </Row> -->
+          <Row>
+            <i-col span="8">
+              <FormItem label="上架/下架" :label-width="70">
+                <RadioGroup v-model="addToform.allow_sale">
+                  <Radio label="true">上架</Radio>
+                  <Radio label="false">下架</Radio>
+                </RadioGroup>
+              </FormItem>
+            </i-col>
+          </Row>
+          <Row>
+            <i-col span="8">
+              <FormItem label="商品标签">
+                <Input v-model="addToform.tag" placeholder="请输入商品标签"/>
+              </FormItem>
+            </i-col>
+          </Row>
+          <Row>
+            <i-col span="8">
+              <FormItem label="市场价">
+                <Input v-model="addToform.market_price" placeholder="请输入市场价"/>
+              </FormItem>
+            </i-col>
+          </Row>
+          <Row>
+            <i-col span="8">
+              <FormItem label="售价">
+                <Input v-model="addToform.sale_price" placeholder="请输入售价"/>
+              </FormItem>
+            </i-col>
+          </Row>
+          <Row>
+            <i-col span="8">
+              <FormItem label="产品编号">
+                <Input v-model="addToform.market_no" placeholder="请输入产品编号"/>
+              </FormItem>
+            </i-col>
+          </Row>
+          <Row>
+            <i-col>
+              <FormItem label="">
                 <Button type="success" @click="addGoodsRules">添加商品规格</Button>
               </FormItem>
             </i-col>
           </Row>
           <Row>
             <i-col>
-              <FormItem label="商品规格">
+              <FormItem label="商品规格" v-show="rulesValue.length > 0">
                 <div v-for="(item, index) in rulesValue" :key="index">
-                  <Row> <i-col span="1">规格名：</i-col> <i-col span="2" class="divvalue">{{item.title}}</i-col></Row>
-                  <Row> <i-col span="1">规格值：</i-col> <i-col span="2" class="divvalue" v-for="(item, index1) in item.content" :key="index1" v-show="index1 != rulesValue[index].content.length-1">{{item}}</i-col><i-col><Button type="error" class="divdelete">删除规格</Button></i-col></Row>
+                  <Row>
+                    <i-col span="1">规格名：</i-col>
+                    <i-col span="2" class="divvalue">{{item.title}}</i-col>
+                  </Row>
+                  <Row>
+                    <i-col span="1">规格值：</i-col>
+                    <i-col span="2" class="divvalue" v-for="(item, index1) in item.content" :key="index1">{{item}}</i-col>
+                    <i-col><Button type="error" class="divdelete" @click="deleteRules(index)">删除规格</Button></i-col>
+                  </Row>
                 </div>
               </FormItem>
             </i-col>
           </Row>
           <Row>
             <i-col>
-              <FormItem label="规格明细">
-                <div v-for="(item, index) in rulesValue" :key="index">
-                  <Row> <i-col span="1">{{item.title}}</i-col> <i-col span="2"></i-col></Row>
-                  <Row> <i-col span="1">规格值：</i-col> <i-col span="2" class="divvalue" v-for="(item, index1) in item.content" :key="index1" v-show="index1 != rulesValue[index].content.length-1">{{item}}</i-col><i-col><Button type="error" class="divdelete">删除规格</Button></i-col></Row>
+              <FormItem label="规格明细" v-show="detailsList.length > 0">
+                <div>
+                  <Row>
+                    <i-col span="2">{{this.rulesTitle}}</i-col>
+                    <i-col span="2">name</i-col>
+                    <i-col span="2">purchase_price</i-col>
+                    <i-col span="2">sale_price</i-col>
+                    <i-col span="2">market_price</i-col>
+                    <i-col span="2">warehousing_count</i-col>
+                    <i-col span="2">platform_profit</i-col>
+                    <i-col span="2">market_profit</i-col>
+                    <i-col span="2">market_no</i-col>
+                    <i-col span="2">specs</i-col>
+                    <i-col span="2">remark</i-col>
+                    <i-col span="2">cover</i-col>
+                  </Row>
+                  <Row v-for="(item, index) in detailsList" :key="index">
+                    <i-col span="2">{{item}}</i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.name[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.purchase_price[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.sale_price[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_price[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.warehousing_count[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.platform_profit[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_profit[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_no[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.specs[index]" placeholder="请输入"/></i-col>
+                    <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.remark[index]" placeholder="请输入"/></i-col>
+                    <i-col>
+                      <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
+                        <template v-if="item.status === 'finished'">
+                          <img :src="item.url">
+                          <div class="demo-upload-list-cover" style="width: 80px;height: 80px;line-height: 80px;">
+                            <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                          </div>
+                        </template>
+                        <template v-else>
+                          <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                        </template>
+                      </div>
+                      <Upload
+                        v-show="!uploadList || uploadList.length == 0"
+                        ref="upload"
+                        :show-upload-list="false"
+                        :default-file-list="defaultList"
+                        :on-success="handleSuccess"
+                        :on-error="handleError"
+                        :format="['ico', 'png', 'jpg', 'jpeg']"
+                        :max-size="2048"
+                        :on-format-error="handleFormatError"
+                        :on-exceeded-size="handleMaxSize"
+                        :before-upload="handleBeforeUpload"
+                        multiple
+                        type="drag"
+                        action="https://upload.qiniup.com"
+                        :data="{token: qiniuToken}"
+                        style="display: inline-block;width:80px;">
+                        <div style="width: 80px;height:80px;line-height: 80px;">
+                            <Icon type="ios-camera" size="20"></Icon>
+                        </div>
+                      </Upload>
+                    </i-col>
+                  </Row>
                 </div>
               </FormItem>
             </i-col>
           </Row>
           <Row>
+            <i-col span="16">
+              <FormItem label="备注">
+                <Input v-model="addToform.remark" type="textarea" :rows="3" placeholder="请输入备注"/>
+              </FormItem>
+            </i-col>
+          </Row>
+          <Row>
             <i-col>
-              <FormItem label="新闻内容">
+              <FormItem label="商品详情">
                 <VueUEditor class="editor-box" @ready="editorReady" ueditorPath="./static/ueditor/" style="height:400px;"></VueUEditor>
               </FormItem>
             </i-col>
           </Row>
           <FormItem>
-            <Button type="primary" id="test" @click="addTonews">保存</Button>
+            <Button type="primary" id="test" @click="commit">保存</Button>
             <Button style="margin-left: 16px;">取消</Button>
           </FormItem>
         </Form>
@@ -123,7 +256,7 @@
       width='480px'
       title="添加规格"
       ok-text="保存"
-      @on-ok="add"
+      @on-ok="add()"
       cancel-text="取消">
       <Form :label-width="80" :model="addForm" :rules="editformRules">
         <FormItem label="规格名">
@@ -132,9 +265,9 @@
         <FormItem label="规格值">
           <Row>
             <i-col v-for="(item, index) in rulesList" :key="index" span="7" class="itemvalue">
-              <Input v-if="index < rulesList.length - 1" v-model="rulesList[index]" placeholder="请输入规格值" clearable @on-clear="clear"/>
-              <Button v-else type="primary" icon="md-add" @click="addItem"></Button>
+              <Input v-model="rulesList[index]" placeholder="请输入规格值" clearable @on-clear="clear"/>
             </i-col>
+            <Button type="primary" icon="md-add" @click="addItem" style="margin-left: 5px;margin-top:5px;"></Button>
           </Row>
         </FormItem>
         <!-- <FormItem label="选择栏目">
@@ -159,17 +292,26 @@ export default {
   components: { VueUEditor },
   data () {
     return {
-      qiniuToken: '',
+      qiniuToken: 'qZIAWsdx_3QNStX5Wpj7BSn4dWAWAsfed_tNiOXd:EWS8a0e6h26NhD7gOly3kO1cVNI=:eyJzY29wZSI6InhoeSIsImRlYWRsaW5lIjoxNTU5MTE5NDQyfQ==',
       uploadList: [],
       defaultList: [],
       categoryList: [],
       addToform: {
-        title: '',
-        categoryName: 's',
-        publishDate: '',
-        digest: '',
-        content: '',
-        cover: ''
+        f_brand_id: '',
+        s_brand_id: '',
+        name: '',
+        cover: '',
+        product_no: '',
+        detail: '',
+        allow_sale: '',
+        tag: '',
+        market_price: '',
+        remark: '',
+        market_no: '',
+        sale_price: '',
+        specs: '',
+        pic_list: '',
+        product_detail: ''
       },
       ueditor: {},
       addModal: false,
@@ -177,14 +319,29 @@ export default {
         name: ''
       },
       editformRules: {},
-      rulesList: ['', '', ''],
+      rulesList: [],
       rulesValue: [],
-      rulesTitle: ''
+      rulesTitle: '',
+      details: {
+        name: [],
+        purchase_price: [],
+        sale_price: [],
+        market_price: [],
+        warehousing_count: [],
+        platform_profit: [],
+        market_profit: [],
+        market_no: [],
+        specs: [],
+        remark: [],
+        cover: []
+      },
+      detailsList: [],
+      priductDetailsList: []
     }
   },
   mounted () {
     this.uploadList = this.$refs.upload.fileList
-    // this.getQiniuToken()
+    this.getQiniuToken()
     // this.getCategories()
   },
   methods: {
@@ -275,7 +432,7 @@ export default {
       })
     },
     handleBeforeUpload () {
-      const check = this.uploadList.length < 1
+      const check = this.uploadList.length < 5
       if (!check) {
         this.$Notice.warning({
           title: '只能上传一个文件。'
@@ -288,7 +445,7 @@ export default {
       this.qiniuToken = localStorage.qiniuToken
       if (this.qiniuToken === null || this.qiniuToken === undefined || this.qiniuToken === '' || force) {
         let self = this
-        this.$http.get('/v1/qiniu/token').then((res) => {
+        this.$http.get('/admin/v1/qiniu/token').then((res) => {
           if (parseInt(res.status) === 200) {
             self.qiniuToken = res.data.token
             localStorage.qiniuToken = self.qiniuToken
@@ -298,6 +455,8 @@ export default {
     },
     addGoodsRules () {
       this.addModal = true
+      this.addForm.name = ''
+      this.rulesList = []
     },
     add () {
       this.rulesValue.push(
@@ -306,24 +465,98 @@ export default {
           content: this.rulesList
         }
       )
-      this.rulesTitle = ''
-      if (this.rulesValue.length === 1) {
-        this.rulesTitle = this.rulesValue[0]
-      } else {
-        this.rulesTitle = this.rulesValue[0] + this.rulesValue[1]
-      }
-      for (let i = 0; i < this.rulesValue.length; i++) {
-        for (let j = 1; j < this.rulesValue.length; j++) {
-
-        }
-      }
+      this.detailsValue()
       console.log(this.rulesValue)
     },
+    detailsValue () {
+      var index = 0
+      this.rulesTitle = ''
+      this.detailsList = []
+      if (this.rulesValue.length === 1) {
+        this.rulesTitle = this.rulesValue[0].title
+        this.detailsList = this.rulesValue[0].content
+      } else if (this.rulesValue.length === 2) {
+        this.rulesTitle = this.rulesValue[0].title + '    ' + this.rulesValue[1].title
+        for (let i = 0; i < this.rulesValue[0].content.length; i++) {
+          for (let j = 0; j < this.rulesValue[1].content.length; j++) {
+            var title = this.rulesValue[0].content[i] + '    ' + this.rulesValue[1].content[j]
+            console.log(title)
+            this.detailsList[index] = title
+            index++
+          }
+        }
+      } else {}
+    },
     addItem () {
-      this.rulesList.push({})
+      this.rulesList.push('')
     },
     clear () {
       // this.rulesList.pop()
+    },
+    commit () {
+      const that = this
+      console.log(this.details)
+      var picList = []
+      for (let i = 0; i < this.uploadList.length; i++) {
+        picList.push(this.uploadList.name)
+      }
+      for (let i = 0; i < this.detailsList.length; i++) {
+        this.priductDetailsList.push({
+          name: this.details.name[i] ? this.details.name[i] : '',
+          purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
+          sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
+          market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
+          warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
+          platform_profit: this.details.platform_profit[i] ? this.details.platform_profit[i] : '',
+          market_profit: this.details.market_profit[i] ? this.details.market_profit[i] : '',
+          market_no: this.details.market_no[i] ? this.details.market_no[i] : '',
+          specs: this.details.specs[i] ? this.details.specs[i] : '',
+          remark: this.details.remark[i] ? this.details.remark[i] : '',
+          cover: this.details.cover[i] ? this.details.cover[i] : ''
+        })
+      }
+      console.log(this.priductDetailsList)
+      this.$http.post('/admin/v1/product', {
+        f_brand_id: '1',
+        s_brand_id: '3',
+        name: this.addToform.name,
+        cover: this.addToform.cover,
+        product_no: this.addToform.product_no,
+        detail: 'this.addToform.detail',
+        // allow_sale: this.addToform.allow_sale,
+        allow_sale: '1',
+        tag: this.addToform.tag,
+        market_price: this.addToform.market_price,
+        remark: this.addToform.remark,
+        market_no: this.addToform.market_no,
+        sale_price: this.addToform.sale_price,
+        specs: this.rulesValue,
+        pic_list: picList,
+        product_detail: this.priductDetailsList
+      }).then(res => {
+        if (res.status === 200) {
+          console.log(res)
+          that.$Message.success('商品添加成功！')
+        } else {
+          that.$Message.error('商品添加失败！')
+        }
+      })
+    },
+    deleteRules (index) {
+      console.log(index)
+      this.rulesValue.splice(index, 1)
+      this.detailsValue()
+      this.details.name = []
+      this.details.purchase_price = []
+      this.details.sale_price = []
+      this.details.market_price = []
+      this.details.warehousing_count = []
+      this.details.platform_profit = []
+      this.details.market_profit = []
+      this.details.market_no = []
+      this.details.specs = []
+      this.details.remark = []
+      this.details.cover = []
     }
   }
 }

@@ -91,7 +91,7 @@ export default {
               sessionStorage.setItem('token', res.data.token)
               that.token = res.data.token
               that.$auth.saveToken(that.token)
-              that.$router.push({ path: '/pages/user/adminManager' })
+              that.$router.push({ path: '/pages/adminManager' })
               // that.getLoginedAdminUserInfo()
               that.loading = false
             } else {
