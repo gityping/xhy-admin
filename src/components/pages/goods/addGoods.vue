@@ -32,17 +32,11 @@
                 </Select>
               </FormItem>
             </i-col>
-            <!-- <i-col span="8">
-              <FormItem label="发表时间" style="margin-left:30px;">
-                <DatePicker type="datetime" placeholder="请设置发表日期" v-model="addToform.publishDate" style="width:100%"></DatePicker>
-              </FormItem>
-            </i-col> -->
           </Row>
           <Row>
             <i-col span="8">
               <FormItem label="商品名称">
                 <Input v-model="addToform.name" placeholder="请输入商品名称"/>
-                <!-- <Input v-model="addToform.digest" type="textarea" :rows="3" placeholder="请输入新闻简介"/> -->
               </FormItem>
             </i-col>
           </Row>
@@ -185,20 +179,19 @@
                     <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.specs[index]" placeholder="请输入"/></i-col>
                     <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.remark[index]" placeholder="请输入"/></i-col> -->
                     <i-col>
-                      <div class="demo-upload-list" v-for="item in 1" :key="item" style="width: 80px;height: 80px;line-height: 80px;">
-                        <template v-if="details.cover[index]">
-                          <img :src="details.cover[index]" style="width: 80px;height: 80px;line-height: 80px;">
-                          <div class="demo-upload-list-cover" style="width: 80px;height: 80px;line-height: 80px;">
+                      <div class="demo-upload-list" v-if="coverList[index]" style="width: 80px;height: 80px;line-height: 80px;">
+                        <template v-if="coverList[index]" >
+                          <img :src="coverList[index].url" style="width: 80px;height: 80px;line-height: 80px;">
+                          <!-- <div class="demo-upload-list-cover" style="width: 80px;height: 80px;line-height: 80px;">
                             <Icon type="ios-trash-outline" @click.native="handleRemoveSingle(item)"></Icon>
-                          </div>
+                          </div> -->
                         </template>
                         <template v-else>
                           <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
                         </template>
                       </div>
                       <Upload
-                        v-show="!details.cover[index]"
-                        ref="uploadsingle"
+                        v-show="!coverList[index]"
                         :show-upload-list="false"
                         :default-file-list="defaultList1"
                         :on-success="handleSuccessSingle"
@@ -280,21 +273,21 @@ export default {
       defaultList1: [],
       categoryList: [],
       addToform: {
-        f_brand_id: '',
-        s_brand_id: '',
-        name: '',
+        f_brand_id: '1',
+        s_brand_id: '3',
+        name: 'test',
         cover: '',
-        product_no: '',
-        detail: '',
+        product_no: '123213',
+        detail: '312313',
         allow_sale: '1',
-        tag: '',
-        market_price: '',
-        remark: '',
-        market_no: '',
-        sale_price: '',
-        specs: '',
-        pic_list: '',
-        product_detail: ''
+        tag: '很好啊',
+        market_price: '56',
+        remark: '呵呵呵',
+        market_no: '313123',
+        sale_price: '56',
+        specs: [],
+        pic_list: [],
+        product_detail: []
       },
       ueditor: {},
       addModal: false,
@@ -321,12 +314,13 @@ export default {
       detailsList: [],
       priductDetailsList: [],
       coverList: [],
-      pic: []
+      pic: [],
+      0: []
     }
   },
   mounted () {
     this.uploadList = this.$refs.upload.fileList
-    this.coverList = this.$refs.uploadsingle.fileList
+    // this.coverList = this.$refs.uploadsingle.fileList
     console.log(this.$refs)
     // console.log(this.coverList)
 
@@ -336,10 +330,10 @@ export default {
   methods: {
     editorReady (editorInstance) {
       this.ueditor = editorInstance
-      this.ueditor.setContent(this.addToform.content)
+      this.ueditor.setContent(this.addToform.detail)
       this.ueditor.setHeight(500)
       this.ueditor.addListener('contentChange', () => {
-        this.addToform.content = this.ueditor.getContent()
+        this.addToform.detail = this.ueditor.getContent()
       })
     },
     getCategories () {
@@ -355,53 +349,16 @@ export default {
         }
       })
     },
-    addTonews () {
-      if (this.addToform.title === '' || this.addToform.title == null) {
-        this.$Message.warning('新闻标题不能为空')
-        return
-      }
-      if (this.addToform.publishDate == null || this.addToform.publishDate.length === 0) {
-        this.$Message.warning('发表时间不能为空')
-        return
-      }
-      if (this.addToform.digest == null || this.addToform.digest.length === 0) {
-        this.$Message.warning('新闻概述不能为空')
-        return
-      }
-      if (this.addToform.content == null || this.addToform.content.length === 0) {
-        this.$Message.warning('新闻内容不能为空')
-        return
-      }
-      if (this.addToform.cover == null || this.addToform.cover.length === 0) {
-        this.$Message.warning('请上传新闻封面图片')
-        return
-      }
-      var newsName = this.addToform.categoryName.toString()
-      const that = this
-      this.$http.post('/v1/news', {
-        title: this.addToform.title,
-        categoryName: newsName,
-        publishDate: this.addToform.publishDate,
-        digest: this.addToform.digest,
-        content: this.addToform.content,
-        cover: this.addToform.cover
-      }).then(res => {
-        if (res.status === 200) {
-          console.log(res)
-          that.$Message.success('新闻发布成功！')
-          this.$router.push('/console/news/newslist/1')
-        } else {
-          that.$Message.error('新闻发布失败！')
-        }
-      })
-    },
     handleRemove (file) {
       const fileList = this.$refs.upload.fileList
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
     handleRemoveSingle (file) {
-      const fileList = this.$refs.uploadsingle.fileList
-      this.$refs.uploadsingle.fileList.splice(fileList.indexOf(file), 1)
+      // const fileList = this.$refs.uploadsingle.fileList
+      // this.$refs.uploadsingle.fileList.splice(fileList.indexOf(file), 1)
+      // this.details.cover.splice(index, 1, '')
+      // this.coverList.splice(index, 1)
+      // console.log(this.details.cover)
     },
     handleSuccess (res, file) {
       file.url = 'http://image.govlan.com/' + res.key
@@ -451,7 +408,7 @@ export default {
       return check
     },
     handleBeforeUploadSingle () {
-      const check = this.coverList.length < 50
+      const check = this.coverList.length < 20
       if (!check) {
         this.$Notice.warning({
           title: '只能上传一个文件。'
@@ -476,6 +433,10 @@ export default {
       this.addModal = true
       this.addForm.name = ''
       this.rulesList = []
+      // this.$nextTick(() => {
+      //   this.coverList = this.$refs.editUpload.fileList
+      // })
+      console.log(this.$refs)
     },
     add () {
       this.rulesValue.push(
@@ -514,11 +475,6 @@ export default {
     },
     commit () {
       const that = this
-      console.log('-------------')
-      console.log(this.coverList)
-      console.log(this.uploadList)
-      console.log('-------------')
-      console.log(this.details)
       var picList = []
       for (let i = 0; i < this.uploadList.length; i++) {
         picList.push(this.uploadList[i].name)
@@ -533,19 +489,19 @@ export default {
           // platform_profit: this.details.platform_profit[i] ? this.details.platform_profit[i] : '',
           // market_profit: this.details.market_profit[i] ? this.details.market_profit[i] : '',
           // market_no: this.details.market_no[i] ? this.details.market_no[i] : '',
-          specs: this.rulesValue ? this.rulesValue : '',
+          specs: this.details.specs[i] ? this.details.specs[i] : '',
           // remark: this.details.remark[i] ? this.details.remark[i] : '',
-          cover: this.details.cover[i] ? 'this.details.cover[i]' : ''
+          cover: this.coverList[i].name ? this.coverList[i].name : ''
         })
       }
       console.log(this.priductDetailsList)
       this.$http.post('/admin/v1/product', {
-        f_brand_id: '1',
-        s_brand_id: '3',
+        f_brand_id: this.addToform.f_brand_id,
+        s_brand_id: this.addToform.s_brand_id,
         name: this.addToform.name,
-        cover: 'this.addToform.cover',
+        cover: this.addToform.cover,
         product_no: this.addToform.product_no,
-        detail: 'this.addToform.detail',
+        detail: this.addToform.detail,
         allow_sale: this.addToform.allow_sale,
         tag: this.addToform.tag,
         market_price: this.addToform.market_price,
@@ -559,6 +515,7 @@ export default {
         if (res.status === 200) {
           console.log(res)
           that.$Message.success('商品添加成功！')
+          this.$router.back()
         } else {
           that.$Message.error('商品添加失败！')
         }
@@ -579,19 +536,6 @@ export default {
       this.details.specs = []
       this.details.remark = []
       this.details.cover = []
-    },
-    strlen (str) {
-      var len = 0
-      for (var i=0; i<str.length; i++) {
-        var c = str.charCodeAt(i)
-        // 单字节加1
-        if ((c >= 0x0001 && c <= 0x007e) || (0xff60 <= c && c <= 0xff9f)) {
-          len++
-        } else {
-          len += 2
-        }
-      }
-      return len
     }
   }
 }
