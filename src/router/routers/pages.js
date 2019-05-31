@@ -39,6 +39,10 @@ export default {
       component: () => import('@/components/pages/goods/addGoods')
     },
     {
+      path: 'brandList/:brandData/:brandId/:index',
+      component: resolve => require(['@/components/pages/goods/brandList'], resolve)
+    },
+    {
       path: 'orderList',
       name: 'orderList',
       text: '订单列表',

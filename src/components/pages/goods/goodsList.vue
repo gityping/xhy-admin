@@ -145,8 +145,23 @@ export default {
     }
   },
   mounted () {
+    this.getGoodsData()
   },
   methods: {
+    getGoodsData () {
+      this.$http.post('/admin/v1/product/search', {
+        brand_id: '5',
+        keywords: '',
+        page: '1',
+        page_size: '15'
+      }).then(res => {
+        if (res.status === 200) {
+          console.log(res)
+        } else {
+          this.$Message.error('商品获取失败！')
+        }
+      })
+    },
     rowClassName (row, index) {
       return 'demo-table-info-row'
     },

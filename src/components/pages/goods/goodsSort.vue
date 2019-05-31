@@ -9,7 +9,7 @@
      <div class="layout-content-detail">
        <div class="layout-search">
          <div style="float:left;">
-            <Button shape="circle" type="primary" icon="plus" @click="addCoupon">添加分类</Button>
+            <Button shape="circle" type="primary" icon="plus" @click="addGoodsSort">添加分类</Button>
           </div>
        </div>
        <div class="table">
@@ -20,6 +20,18 @@
         <Page :current="parseInt(pageInfo.currentPage)" show-elevator :total="parseInt(pageInfo.allNum)" :page-size="pageSize" @on-change="changePage"></Page>
       </div>
      </div>
+     <Modal
+      v-model="addModel"
+      :title="title"
+      @on-ok="ok"
+      @on-cancel="cancel">
+      <Form ref="formItem" :model="formItem" label-position="right" :label-width="120" :rules="rules">
+        <FormItem prop="title" label="请输入分类名称：">
+          <i-input v-model="formItem.title" clearable placeholder="请输入分类名称">
+          </i-input>
+        </FormItem>
+      </Form>
+    </Modal>
    </div>
 </template>
 <script>
@@ -33,6 +45,14 @@ export default {
         maxPage: 1
       },
       pageSize: 15,
+      addModel: false,
+      title: '添加',
+      rules: {
+        title: [{required: true, message: '分类名称不能为空', trigger: 'blur'}]
+      },
+      formItem: {
+        title: ''
+      },
       dataList: [
         {
           '1': '001',
@@ -101,7 +121,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      alert(666)
+                      this.details(parmas.row.id, parmas.index, parmas.row.brand_name)
                     }
                   }
                 },
@@ -145,6 +165,7 @@ export default {
     }
   },
   mounted () {
+    this.getSortList()
   },
   methods: {
     rowClassName (row, index) {
@@ -152,6 +173,47 @@ export default {
     },
     changePage (page) {
 
+    },
+    addGoodsSort () {
+      this.addModel = true
+      this.title = '添加'
+    },
+    details (id, index, data) {
+      this.$router.push({path: 'brandList/' + JSON.stringify(data) + '/' + id + '/' + index})
+    },
+    ok () {
+      let that = this
+      that.$refs.formItem.validate((valid) => {
+        if (valid) {
+          that.$http.post('/admin/v1/brand', {
+            title: that.formItem.title
+          }).then((res) => {
+            console.log(res)
+            if (res.status === 200) {
+              that.getSortList()
+              that.$Message.success('添加成功')
+            } else {
+              that.$Message.error(res.data.msg)
+            }
+          })
+        }
+      })
+    },
+    cancel () {
+
+    },
+    getSortList () {
+      let that = this
+      that.$http.get('/admin/v1/brand', {
+        openId: ''
+      }).then((res) => {
+        console.log(res.data)
+        if (res.status === 200) {
+          // that.sortList = res.data
+        } else {
+          that.$Message.error(res.data.msg)
+        }
+      })
     }
   }
 }
