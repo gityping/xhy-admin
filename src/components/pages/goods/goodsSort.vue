@@ -44,6 +44,7 @@ export default {
         currentPage: 1,
         maxPage: 1
       },
+      editId: '',
       pageSize: 15,
       addModel: false,
       title: '添加',
@@ -53,54 +54,15 @@ export default {
       formItem: {
         title: ''
       },
-      dataList: [
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        }
-      ],
+      dataList: [],
       columns: [
         {
-          key: '1',
-          title: 'Id'
+          key: 'id',
+          title: '分类Id'
         },
         {
-          key: '2',
-          title: 'name'
-        },
-        {
-          key: '3',
-          title: 'sex'
-        },
-        {
-          key: '4',
-          title: 'age'
+          key: 'title',
+          title: '分类名称'
         },
         {
           title: '操作',
@@ -139,10 +101,11 @@ export default {
                   },
                   on: {
                     click: () => {
+                      this.edit(parmas.row.id, parmas.row.title)
                     }
                   }
                 },
-                '回复'
+                '编辑'
               ),
               h(
                 'Button',
@@ -153,6 +116,7 @@ export default {
                   },
                   on: {
                     click: () => {
+                      this.delete(parmas.row.id)
                     }
                   }
                 },
@@ -177,21 +141,63 @@ export default {
     addGoodsSort () {
       this.addModel = true
       this.title = '添加'
+      this.formItem.title = ''
     },
     details (id, index, data) {
       this.$router.push({path: 'brandList/' + JSON.stringify(data) + '/' + id + '/' + index})
     },
     ok () {
       let that = this
-      that.$refs.formItem.validate((valid) => {
-        if (valid) {
-          that.$http.post('/admin/v1/brand', {
-            title: that.formItem.title
-          }).then((res) => {
+      if (this.title === '添加') {
+        that.$refs.formItem.validate((valid) => {
+          if (valid) {
+            that.$http.post('/admin/v1/brand', {
+              title: that.formItem.title
+            }).then((res) => {
+              console.log(res)
+              if (res.status === 200) {
+                that.getSortList()
+                that.$Message.success('添加成功')
+              } else {
+                that.$Message.error(res.data.msg)
+              }
+            })
+          }
+        })
+      } else {
+        that.$refs.formItem.validate((valid) => {
+          if (valid) {
+            that.$http.put('/admin/v1/brand/' + this.editId, {
+              title: that.formItem.title
+            }).then((res) => {
+              console.log(res)
+              if (res.status === 200) {
+                that.getSortList()
+                that.$Message.success('编辑成功')
+              } else {
+                that.$Message.error(res.data.msg)
+              }
+            })
+          }
+        })
+      }
+    },
+    cancel () {
+
+    },
+    delete (id) {
+      let that = this
+      that.$Modal.confirm({
+        title: '温馨提示',
+        content: '您确定要删除吗？',
+        okText: '确定',
+        cancelText: '取消',
+        onOk: () => {
+          that.$http.delete('admin/v1/brand/' + id).then((res) => {
             console.log(res)
             if (res.status === 200) {
-              that.getSortList()
-              that.$Message.success('添加成功')
+              this.getSortList()
+              that.$Message.success('删除成功')
             } else {
               that.$Message.error(res.data.msg)
             }
@@ -199,8 +205,11 @@ export default {
         }
       })
     },
-    cancel () {
-
+    edit (id, title) {
+      this.addModel = true
+      this.title = '编辑'
+      this.editId = id
+      this.formItem.title = title
     },
     getSortList () {
       let that = this
@@ -209,7 +218,7 @@ export default {
       }).then((res) => {
         console.log(res.data)
         if (res.status === 200) {
-          // that.sortList = res.data
+          that.dataList = res.data.entities
         } else {
           that.$Message.error(res.data.msg)
         }

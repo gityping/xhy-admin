@@ -61,6 +61,24 @@ export default {
                 'Button',
                 {
                   props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.edit(parmas.row.id, parmas.row.title)
+                    }
+                  }
+                },
+                '编辑'
+              ),
+              h(
+                'Button',
+                {
+                  props: {
                     type: 'error',
                     size: 'small'
                   },
@@ -93,7 +111,8 @@ export default {
       },
       rules: {
         title: [{required: true, message: '品牌不能为空', trigger: 'blur'}]
-      }
+      },
+      editId: ''
     }
   },
   methods: {
@@ -102,29 +121,52 @@ export default {
     addUser () {
       this.addModel = true
       this.title = '添加'
+      this.formItem.title = ''
+    },
+    edit (id, title) {
+      this.addModel = true
+      this.title = '编辑'
+      this.editId = id
+      this.formItem.title = title
     },
     ok () {
       let that = this
-      that.$refs.formItem.validate((valid) => {
-        if (valid) {
-          that.$http.post('api/v1/brand', {
-            title: that.formItem.title,
-            brand_id: this.id
-          }).then((res) => {
-            console.log(res)
-            if (res.status === 200) {
-              this.getSortList()
-              that.$Message.success('添加成功')
-            } else {
-              that.$Message.error(res.data.msg)
-            }
-          })
-        }
-      })
+      if (this.title === '添加') {
+        that.$refs.formItem.validate((valid) => {
+          if (valid) {
+            that.$http.post('admin/v1/brand', {
+              title: that.formItem.title,
+              brand_id: this.id
+            }).then((res) => {
+              console.log(res)
+              if (res.status === 200) {
+                this.getSortList()
+                that.$Message.success('添加成功')
+              } else {
+                that.$Message.error(res.data.msg)
+              }
+            })
+          }
+        })
+      } else {
+        that.$refs.formItem.validate((valid) => {
+          if (valid) {
+            that.$http.put('/admin/v1/brand/' + this.editId, {
+              title: that.formItem.title
+            }).then((res) => {
+              console.log(res)
+              if (res.status === 200) {
+                that.getSortList()
+                that.$Message.success('编辑成功')
+              } else {
+                that.$Message.error(res.data.msg)
+              }
+            })
+          }
+        })
+      }
     },
     cancel () {
-    },
-    edit () {
     },
     delete (id) {
       let that = this
@@ -134,7 +176,7 @@ export default {
         okText: '确定',
         cancelText: '取消',
         onOk: () => {
-          that.$http.delete('api/v1/brand/' + id).then((res) => {
+          that.$http.delete('admin/v1/brand/' + id).then((res) => {
             console.log(res)
             if (res.status === 200) {
               // this.$router.back()
@@ -149,12 +191,12 @@ export default {
     },
     getSortList () {
       let that = this
-      that.$http.get('api/v1/brand', {
+      that.$http.get('admin/v1/brand', {
         openId: ''
       }).then((res) => {
         console.log(res.data)
         if (res.status === 200) {
-          this.brandList = res.data[that.index].brand_name
+          this.brandList = res.data.entities[that.index].child
         } else {
           that.$Message.error(res.data.msg)
         }

@@ -33,54 +33,73 @@ export default {
         maxPage: 1
       },
       pageSize: 15,
-      dataList: [
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        },
-        {
-          '1': '001',
-          '2': 'wwww',
-          '3': 'man',
-          '4': '32'
-        }
-      ],
+      dataList: [],
       columns: [
         {
-          key: '1',
-          title: 'Id'
+          key: 'name',
+          title: '商品名称'
         },
         {
-          key: '2',
-          title: 'name'
+          key: 'cover',
+          title: '商品图片',
+          render: (h, parmas) => {
+            return h('div', {
+              attrs: {
+                style: 'width: auto;height: 40px;'
+              }
+            }, [
+              h('img', {
+                attrs: {
+                  src: parmas.row.cover,
+                  style: 'width: 60px;height: 40px;border-radius: 2px; align: center;'
+                }
+              })
+            ])
+          }
         },
         {
-          key: '3',
-          title: 'sex'
+          key: 'product_no',
+          title: '商品编号'
         },
         {
-          key: '4',
-          title: 'age'
+          key: 'sale_price',
+          title: '出售价格'
+        },
+        {
+          key: 'f_brand_name',
+          title: '分类'
+        },
+        {
+          key: 's_brand_name',
+          title: '品牌'
+        },
+        {
+          key: 'allow_sale',
+          title: '上/下架',
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'div',
+                {
+                  props: {
+                    type: (function () {})(),
+                    size: 'small'
+                  },
+                  style: { marginRight: '5px' },
+                  on: {
+                    click: () => {}
+                  }
+                },
+                (function () {
+                  if (params.row.allow_sale === 1) {
+                    return '上架'
+                  } else {
+                    return '下架'
+                  }
+                })()
+              )
+            ])
+          }
         },
         {
           title: '操作',
@@ -101,7 +120,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      alert(666)
+                      this.$router.push({ path: '/pages/addGoods/' + parmas.row.id })
                     }
                   }
                 },
@@ -150,13 +169,13 @@ export default {
   methods: {
     getGoodsData () {
       this.$http.post('/admin/v1/product/search', {
-        brand_id: '5',
-        keywords: '',
-        page: '1',
-        page_size: '15'
+        page: 1,
+        page_size: 10
       }).then(res => {
         if (res.status === 200) {
           console.log(res)
+          this.dataList = res.data.entities
+          this.pageInfo = res.data.pageInfo
         } else {
           this.$Message.error('商品获取失败！')
         }
@@ -169,7 +188,7 @@ export default {
 
     },
     addGoods () {
-      this.$router.push({ path: '/pages/addGoods' })
+      this.$router.push({ path: '/pages/addGoods/0' })
     }
   }
 }

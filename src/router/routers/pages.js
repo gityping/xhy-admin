@@ -33,7 +33,7 @@ export default {
       component: () => import('@/components/pages/goods/goodsList')
     },
     {
-      path: 'addGoods',
+      path: 'addGoods/:goodsId',
       name: '/goods/addGoods',
       text: '添加商品',
       component: () => import('@/components/pages/goods/addGoods')

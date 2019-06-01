@@ -12,18 +12,24 @@
         <Form :label-width="60">
           <Row>
             <i-col span="8">
-              <!-- <FormItem label="新闻标题">
-                <Input v-model="addToform.title" placeholder="请输入新闻标题"/>
-              </FormItem> -->
-              <FormItem label="一级分类" >
-                <Select
-                  multiple
-                  v-model="addToform.f_brand_id">
-                  <Option v-for="(item, index) in categoryList" :value="item" :key="index">{{item}}</Option>
-                </Select>
+              <FormItem label="商品名称">
+                <Input v-model="addToform.name" placeholder="请输入商品名称" style="z-index:100;"/>
               </FormItem>
             </i-col>
             <i-col span="8">
+              <!-- <FormItem label="新闻标题">
+                <Input v-model="addToform.title" placeholder="请输入新闻标题"/>
+              </FormItem> -->
+              <FormItem label="分类/品牌" :label-width="70">
+                <!-- <Select
+                  multiple
+                  v-model="addToform.f_brand_id">
+                  <Option v-for="(item, index) in categoryList" :value="item" :key="index">{{item}}</Option>
+                </Select> -->
+                <Cascader :data="data" v-model="value" style="z-index:1000;"></Cascader>
+              </FormItem>
+            </i-col>
+            <!-- <i-col span="8">
               <FormItem label="二级分类" style="margin-left:30px;">
                 <Select
                   multiple
@@ -31,19 +37,19 @@
                   <Option v-for="(item, index) in categoryList" :value="item" :key="index">{{item}}</Option>
                 </Select>
               </FormItem>
-            </i-col>
+            </i-col> -->
           </Row>
-          <Row>
+          <!-- <Row>
             <i-col span="8">
               <FormItem label="商品名称">
-                <Input v-model="addToform.name" placeholder="请输入商品名称"/>
+                <Input v-model="addToform.name" placeholder="请输入商品名称" style="z-index:100;"/>
               </FormItem>
             </i-col>
-          </Row>
+          </Row> -->
           <Row>
             <i-col>
-              <FormItem label="缩略图">
-                <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index">
+              <FormItem label="缩略图" style="z-index:100;">
+                <div class="demo-upload-list" v-for="(item, index) in uploadList" :key="index" style="z-index:100;">
                   <template v-if="item.status === 'finished'">
                     <img :src="item.url">
                     <div class="demo-upload-list-cover">
@@ -273,18 +279,18 @@ export default {
       defaultList1: [],
       categoryList: [],
       addToform: {
-        f_brand_id: '1',
-        s_brand_id: '3',
-        name: 'test',
+        f_brand_id: '',
+        s_brand_id: '',
+        name: '',
         cover: '',
-        product_no: '123213',
-        detail: '312313',
+        product_no: '',
+        detail: '',
         allow_sale: '1',
-        tag: '很好啊',
-        market_price: '56',
-        remark: '呵呵呵',
-        market_no: '313123',
-        sale_price: '56',
+        tag: '',
+        market_price: '',
+        remark: '',
+        market_no: '',
+        sale_price: '',
         specs: [],
         pic_list: [],
         product_detail: []
@@ -299,23 +305,26 @@ export default {
       rulesValue: [],
       rulesTitle: '',
       details: {
-        name: [],
+        // name: [],
         purchase_price: [],
         sale_price: [],
         market_price: [],
         warehousing_count: [],
-        platform_profit: [],
-        market_profit: [],
-        market_no: [],
+        // platform_profit: [],
+        // market_profit: [],
+        // market_no: [],
         specs: [],
-        remark: [],
+        // remark: [],
         cover: []
       },
       detailsList: [],
       priductDetailsList: [],
       coverList: [],
       pic: [],
-      0: []
+      0: [],
+      data: [],
+      value: [],
+      goodsId: this.$route.params.goodsId
     }
   },
   mounted () {
@@ -325,7 +334,12 @@ export default {
     // console.log(this.coverList)
 
     this.getQiniuToken()
-    // this.getCategories()
+    this.getSortData()
+    if (this.goodsId === '0') {
+
+    } else {
+      this.getgoodsDetailss(this.goodsId)
+    }
   },
   methods: {
     editorReady (editorInstance) {
@@ -336,16 +350,31 @@ export default {
         this.addToform.detail = this.ueditor.getContent()
       })
     },
-    getCategories () {
-      const self = this
-      this.$http.get('/v1/news/category').then((res) => {
-        if (parseInt(res.status)) {
-          var category = res.data.content
-          if (category) {
-            self.categoryList = JSON.parse(category)
-            self.categoryList.splice(0, 1)
-            console.log(self.categoryList)
+    getSortData () {
+      let that = this
+      that.$http.get('admin/v1/brand').then((res) => {
+        console.log(res.data)
+        if (res.status === 200) {
+          for (let i = 0; i < res.data.entities.length; i++) {
+            that.data.push({
+              value: res.data.entities[i].id,
+              label: res.data.entities[i].title,
+              children: []
+            })
+            for (let n = 0; n < res.data.entities[i].child.length; n++) {
+              console.log(res.data.entities[i].child[n].title)
+              if (res.data.entities[i].child.length === 0) {
+              } else {
+                that.data[i].children.push({
+                  value: res.data.entities[i].child[n].id,
+                  label: res.data.entities[i].child[n].title
+                })
+              }
+            }
           }
+          console.log(that.data)
+        } else {
+          that.$Message.error(res.data.msg)
         }
       })
     },
@@ -475,51 +504,55 @@ export default {
     },
     commit () {
       const that = this
-      var picList = []
-      for (let i = 0; i < this.uploadList.length; i++) {
-        picList.push(this.uploadList[i].name)
-      }
-      for (let i = 0; i < this.detailsList.length; i++) {
-        this.priductDetailsList.push({
-          // name: this.details.name[i] ? this.details.name[i] : '',
-          purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
-          sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
-          market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
-          warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
-          // platform_profit: this.details.platform_profit[i] ? this.details.platform_profit[i] : '',
-          // market_profit: this.details.market_profit[i] ? this.details.market_profit[i] : '',
-          // market_no: this.details.market_no[i] ? this.details.market_no[i] : '',
-          specs: this.details.specs[i] ? this.details.specs[i] : '',
-          // remark: this.details.remark[i] ? this.details.remark[i] : '',
-          cover: this.coverList[i].name ? this.coverList[i].name : ''
-        })
-      }
-      console.log(this.priductDetailsList)
-      this.$http.post('/admin/v1/product', {
-        f_brand_id: this.addToform.f_brand_id,
-        s_brand_id: this.addToform.s_brand_id,
-        name: this.addToform.name,
-        cover: this.addToform.cover,
-        product_no: this.addToform.product_no,
-        detail: this.addToform.detail,
-        allow_sale: this.addToform.allow_sale,
-        tag: this.addToform.tag,
-        market_price: this.addToform.market_price,
-        remark: this.addToform.remark,
-        market_no: this.addToform.market_no,
-        sale_price: this.addToform.sale_price,
-        specs: this.rulesValue,
-        pic_list: picList,
-        product_detail: this.priductDetailsList
-      }).then(res => {
-        if (res.status === 200) {
-          console.log(res)
-          that.$Message.success('商品添加成功！')
-          this.$router.back()
-        } else {
-          that.$Message.error('商品添加失败！')
+      if (this.goodsId === '0') {
+        var picList = []
+        for (let i = 0; i < this.uploadList.length; i++) {
+          picList.push(this.uploadList[i].name)
         }
-      })
+        for (let i = 0; i < this.detailsList.length; i++) {
+          this.priductDetailsList.push({
+            // name: this.details.name[i] ? this.details.name[i] : '',
+            purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
+            sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
+            market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
+            warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
+            // platform_profit: this.details.platform_profit[i] ? this.details.platform_profit[i] : '',
+            // market_profit: this.details.market_profit[i] ? this.details.market_profit[i] : '',
+            // market_no: this.details.market_no[i] ? this.details.market_no[i] : '',
+            specs: this.details.specs[i] ? this.details.specs[i] : '',
+            // remark: this.details.remark[i] ? this.details.remark[i] : '',
+            cover: this.coverList[i].name ? this.coverList[i].name : ''
+          })
+        }
+        console.log(this.priductDetailsList)
+        this.$http.post('/admin/v1/product', {
+          f_brand_id: this.value[0],
+          s_brand_id: this.value[1],
+          name: this.addToform.name,
+          cover: this.addToform.cover,
+          product_no: this.addToform.product_no,
+          detail: this.addToform.detail,
+          allow_sale: this.addToform.allow_sale,
+          tag: this.addToform.tag,
+          market_price: this.addToform.market_price,
+          remark: this.addToform.remark,
+          market_no: this.addToform.market_no,
+          sale_price: this.addToform.sale_price,
+          specs: this.rulesValue,
+          pic_list: picList,
+          product_detail: this.priductDetailsList
+        }).then(res => {
+          if (res.status === 200) {
+            console.log(res)
+            that.$Message.success('商品添加成功！')
+            this.$router.back()
+          } else {
+            that.$Message.error('商品添加失败！')
+          }
+        })
+      } else {
+
+      }
     },
     deleteRules (index) {
       console.log(index)
@@ -536,6 +569,65 @@ export default {
       this.details.specs = []
       this.details.remark = []
       this.details.cover = []
+    },
+    getgoodsDetailss (id) {
+      let that = this
+      that.$http.get('admin/v1/product/' + id).then((res) => {
+        console.log(res)
+        if (res.status === 200) {
+          var index = 0
+          this.rulesTitle = ''
+          // this.detailsList = []
+          this.addToform = res.data
+          this.rulesValue = res.data.specs
+          this.detailsList.length = res.data.product_detail.length
+          if (this.rulesValue.length === 1) {
+            this.rulesTitle = this.rulesValue[0].title
+            this.detailsList = this.rulesValue[0].content
+          } else if (this.rulesValue.length === 2) {
+            this.rulesTitle = this.rulesValue[0].title + '    ' + this.rulesValue[1].title
+            for (let i = 0; i < this.rulesValue[0].content.length; i++) {
+              for (let j = 0; j < this.rulesValue[1].content.length; j++) {
+                var title = this.rulesValue[0].content[i] + '    ' + this.rulesValue[1].content[j]
+                console.log(title)
+                this.detailsList[index] = title
+                index++
+              }
+            }
+          } else {}
+          // debugger
+          console.log('res.data.product_detail')
+          console.log(res.data.product_detail)
+          // that.details = res.data.product_detail
+          for (let i = 0; i < res.data.product_detail.length; i++) {
+            this.details.market_price[i] = res.data.product_detail[i].market_price
+            this.details.purchase_price[i] = res.data.product_detail[i].purchase_price
+            this.details.sale_price[i] = res.data.product_detail[i].sale_price
+            this.details.specs[i] = res.data.product_detail[i].specs
+            // this.details.cover[i] = res.data.product_detail[i].cover
+            this.details.warehousing_count[i] = res.data.product_detail[i].count
+            this.coverList.push({
+              name: 'file.name',
+              url: res.data.product_detail[i].cover,
+              showProgress: false,
+              status: 'finished'
+            })
+          }
+          for (let i = 0; i < res.data.pic_list.length; i++) {
+            this.uploadList.push({
+              name: 'file.name',
+              url: res.data.pic_list[i].pic,
+              showProgress: false,
+              status: 'finished'
+            })
+          }
+          // this.value.push(res.data.f_brand_name)
+          // this.value.push(res.data.s_brand_name)
+          // this.addForm.cover = res.data.cover
+        } else {
+          that.$Message.error(res.data.msg)
+        }
+      })
     }
   }
 }

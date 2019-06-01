@@ -28,6 +28,7 @@ axios.interceptors.request.use((config) => {
   // iView.LoadingBar.start()
   // 需要登录
   // debugger
+  console.log(auth.get().token)
   if (config.status === 401) {
     router.push('/login')
   }
