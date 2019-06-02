@@ -120,7 +120,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.$router.push({ path: '/pages/addGoods/' + parmas.row.id })
+                      this.$router.push({ path: '/pages/goodsDetails/' + parmas.row.id })
                     }
                   }
                 },
@@ -138,10 +138,11 @@ export default {
                   },
                   on: {
                     click: () => {
+                      this.$router.push({ path: '/pages/addGoods/' + parmas.row.id })
                     }
                   }
                 },
-                '回复'
+                '编辑'
               ),
               h(
                 'Button',

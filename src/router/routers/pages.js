@@ -39,6 +39,12 @@ export default {
       component: () => import('@/components/pages/goods/addGoods')
     },
     {
+      path: 'goodsDetails/:goodsId',
+      name: '/goods/goodsDetails',
+      text: '添加商品',
+      component: () => import('@/components/pages/goods/goodsDetails')
+    },
+    {
       path: 'brandList/:brandData/:brandId/:index',
       component: resolve => require(['@/components/pages/goods/brandList'], resolve)
     },

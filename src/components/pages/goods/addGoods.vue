@@ -53,7 +53,7 @@
                   <template v-if="item.status === 'finished'">
                     <img :src="item.url">
                     <div class="demo-upload-list-cover">
-                      <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                      <Icon type="ios-trash-outline" @click.native="handleRemove(item, index)"></Icon>
                     </div>
                   </template>
                   <template v-else>
@@ -160,37 +160,27 @@
                 <div>
                   <Row>
                     <i-col span="2">{{this.rulesTitle}}</i-col>
-                    <!-- <i-col span="2">name</i-col> -->
                     <i-col span="3">purchase_price</i-col>
                     <i-col span="3">sale_price</i-col>
                     <i-col span="3">market_price</i-col>
                     <i-col span="3">warehousing_count</i-col>
-                    <!-- <i-col span="2">platform_profit</i-col> -->
-                    <!-- <i-col span="2">market_profit</i-col> -->
-                    <!-- <i-col span="2">market_no</i-col> -->
                     <i-col span="3">specs</i-col>
-                    <!-- <i-col span="2">remark</i-col> -->
                     <i-col span="3">cover</i-col>
                   </Row>
                   <Row v-for="(item, index) in detailsList" :key="index">
                     <i-col span="2">{{item}}</i-col>
-                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.name[index]" placeholder="请输入"/></i-col> -->
                     <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.purchase_price[index]" placeholder="请输入"/></i-col>
                     <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.sale_price[index]" placeholder="请输入"/></i-col>
                     <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.market_price[index]" placeholder="请输入"/></i-col>
                     <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.warehousing_count[index]" placeholder="请输入"/></i-col>
-                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.platform_profit[index]" placeholder="请输入"/></i-col> -->
-                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_profit[index]" placeholder="请输入"/></i-col> -->
-                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.market_no[index]" placeholder="请输入"/></i-col> -->
                     <i-col span="3"><Input style="width: 100px; z-index: 99;" v-model="details.specs[index]" placeholder="请输入"/></i-col>
-                    <!-- <i-col span="2"><Input style="width: 100px; z-index: 99;" v-model="details.remark[index]" placeholder="请输入"/></i-col> -->
                     <i-col>
                       <div class="demo-upload-list" v-if="coverList[index]" style="width: 80px;height: 80px;line-height: 80px;">
                         <template v-if="coverList[index]" >
                           <img :src="coverList[index].url" style="width: 80px;height: 80px;line-height: 80px;">
-                          <!-- <div class="demo-upload-list-cover" style="width: 80px;height: 80px;line-height: 80px;">
-                            <Icon type="ios-trash-outline" @click.native="handleRemoveSingle(item)"></Icon>
-                          </div> -->
+                          <div class="demo-upload-list-cover" style="width: 80px;height: 80px;line-height: 80px;">
+                            <Icon type="ios-trash-outline" @click.native="handleRemoveSingle(coverList[index], index)"></Icon>
+                          </div>
                         </template>
                         <template v-else>
                           <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
@@ -324,7 +314,8 @@ export default {
       0: [],
       data: [],
       value: [],
-      goodsId: this.$route.params.goodsId
+      goodsId: this.$route.params.goodsId,
+      editUpload: []
     }
   },
   mounted () {
@@ -342,6 +333,9 @@ export default {
     }
   },
   methods: {
+    clickPic (index) {
+      debugger
+    },
     editorReady (editorInstance) {
       this.ueditor = editorInstance
       this.ueditor.setContent(this.addToform.detail)
@@ -378,26 +372,28 @@ export default {
         }
       })
     },
-    handleRemove (file) {
+    handleRemove (file, index) {
       const fileList = this.$refs.upload.fileList
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1)
     },
-    handleRemoveSingle (file) {
+    handleRemoveSingle (file, index) {
       // const fileList = this.$refs.uploadsingle.fileList
       // this.$refs.uploadsingle.fileList.splice(fileList.indexOf(file), 1)
       // this.details.cover.splice(index, 1, '')
       // this.coverList.splice(index, 1)
-      // console.log(this.details.cover)
+      // console.log(file)
+      // console.log(index)
+      // console.log(this.coverList)
     },
     handleSuccess (res, file) {
-      file.url = 'http://image.govlan.com/' + res.key
+      file.url = 'http://xhy-res.vyeahcorp.com/' + res.key
       file.name = res.key
       this.addToform.cover = file.name
     },
     handleSuccessSingle (res, file) {
       console.log(res)
       console.log(file)
-      file.url = 'http://image.govlan.com/' + res.key
+      file.url = 'http://xhy-res.vyeahcorp.com/' + res.key
       file.name = res.key
       this.coverList.push({
         name: file.name,
@@ -504,26 +500,21 @@ export default {
     },
     commit () {
       const that = this
+      var picList = []
+      for (let i = 0; i < this.uploadList.length; i++) {
+        picList.push(this.uploadList[i].name)
+      }
+      for (let i = 0; i < this.detailsList.length; i++) {
+        this.priductDetailsList.push({
+          purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
+          sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
+          market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
+          warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
+          specs: this.details.specs[i] ? this.details.specs[i] : '',
+          cover: this.coverList[i].name ? this.coverList[i].name : ''
+        })
+      }
       if (this.goodsId === '0') {
-        var picList = []
-        for (let i = 0; i < this.uploadList.length; i++) {
-          picList.push(this.uploadList[i].name)
-        }
-        for (let i = 0; i < this.detailsList.length; i++) {
-          this.priductDetailsList.push({
-            // name: this.details.name[i] ? this.details.name[i] : '',
-            purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
-            sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
-            market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
-            warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
-            // platform_profit: this.details.platform_profit[i] ? this.details.platform_profit[i] : '',
-            // market_profit: this.details.market_profit[i] ? this.details.market_profit[i] : '',
-            // market_no: this.details.market_no[i] ? this.details.market_no[i] : '',
-            specs: this.details.specs[i] ? this.details.specs[i] : '',
-            // remark: this.details.remark[i] ? this.details.remark[i] : '',
-            cover: this.coverList[i].name ? this.coverList[i].name : ''
-          })
-        }
         console.log(this.priductDetailsList)
         this.$http.post('/admin/v1/product', {
           f_brand_id: this.value[0],
@@ -551,7 +542,31 @@ export default {
           }
         })
       } else {
-
+        this.$http.put('/admin/v1/product/' + this.goodsId, {
+          f_brand_id: this.value[0],
+          s_brand_id: this.value[1],
+          name: this.addToform.name,
+          cover: this.addToform.originCover,
+          product_no: this.addToform.product_no,
+          detail: this.addToform.detail,
+          allow_sale: this.addToform.allow_sale,
+          tag: this.addToform.tag,
+          market_price: this.addToform.market_price,
+          remark: this.addToform.remark,
+          market_no: this.addToform.market_no,
+          sale_price: this.addToform.sale_price,
+          specs: this.rulesValue,
+          pic_list: '',
+          product_detail: this.priductDetailsList
+        }).then(res => {
+          if (res.status === 200) {
+            console.log(res)
+            that.$Message.success('商品编辑成功！')
+            this.$router.back()
+          } else {
+            that.$Message.error('商品编辑失败！')
+          }
+        })
       }
     },
     deleteRules (index) {
@@ -577,7 +592,7 @@ export default {
         if (res.status === 200) {
           var index = 0
           this.rulesTitle = ''
-          // this.detailsList = []
+          this.detailsList = []
           this.addToform = res.data
           this.rulesValue = res.data.specs
           this.detailsList.length = res.data.product_detail.length
@@ -607,7 +622,7 @@ export default {
             // this.details.cover[i] = res.data.product_detail[i].cover
             this.details.warehousing_count[i] = res.data.product_detail[i].count
             this.coverList.push({
-              name: 'file.name',
+              name: res.data.pic_list[i].originCover,
               url: res.data.product_detail[i].cover,
               showProgress: false,
               status: 'finished'
@@ -615,14 +630,15 @@ export default {
           }
           for (let i = 0; i < res.data.pic_list.length; i++) {
             this.uploadList.push({
-              name: 'file.name',
+              name: res.data.pic_list[i].originPic,
               url: res.data.pic_list[i].pic,
               showProgress: false,
               status: 'finished'
             })
           }
-          // this.value.push(res.data.f_brand_name)
-          // this.value.push(res.data.s_brand_name)
+          this.value.push(res.data.f_brand_id)
+          this.value.push(res.data.s_brand_id)
+          this.ueditor.setContent(res.data.detail)
           // this.addForm.cover = res.data.cover
         } else {
           that.$Message.error(res.data.msg)
