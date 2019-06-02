@@ -295,16 +295,12 @@ export default {
       rulesValue: [],
       rulesTitle: '',
       details: {
-        // name: [],
         purchase_price: [],
         sale_price: [],
         market_price: [],
         warehousing_count: [],
-        // platform_profit: [],
-        // market_profit: [],
-        // market_no: [],
         specs: [],
-        // remark: [],
+        id: [],
         cover: []
       },
       detailsList: [],
@@ -505,14 +501,26 @@ export default {
         picList.push(this.uploadList[i].name)
       }
       for (let i = 0; i < this.detailsList.length; i++) {
-        this.priductDetailsList.push({
-          purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
-          sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
-          market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
-          warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
-          specs: this.details.specs[i] ? this.details.specs[i] : '',
-          cover: this.coverList[i].name ? this.coverList[i].name : ''
-        })
+        if (this.details.id[i]) {
+          this.priductDetailsList.push({
+            purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
+            sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
+            market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
+            warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
+            specs: this.details.specs[i] ? this.details.specs[i] : '',
+            cover: this.details.cover[i] ? this.details.cover[i] : '',
+            id: this.details.id[i] ? this.details.id[i] : ''
+          })
+        } else {
+          this.priductDetailsList.push({
+            purchase_price: this.details.purchase_price[i] ? this.details.purchase_price[i] : '',
+            sale_price: this.details.sale_price[i] ? this.details.sale_price[i] : '',
+            market_price: this.details.market_price[i] ? this.details.market_price[i] : '',
+            warehousing_count: this.details.warehousing_count[i] ? this.details.warehousing_count[i] : '',
+            specs: this.details.specs[i] ? this.details.specs[i] : '',
+            cover: this.coverList[i].name ? this.coverList[i].name : ''
+          })
+        }
       }
       if (this.goodsId === '0') {
         console.log(this.priductDetailsList)
@@ -556,7 +564,7 @@ export default {
           market_no: this.addToform.market_no,
           sale_price: this.addToform.sale_price,
           specs: this.rulesValue,
-          pic_list: '',
+          pic_list: picList,
           product_detail: this.priductDetailsList
         }).then(res => {
           if (res.status === 200) {
@@ -619,8 +627,9 @@ export default {
             this.details.purchase_price[i] = res.data.product_detail[i].purchase_price
             this.details.sale_price[i] = res.data.product_detail[i].sale_price
             this.details.specs[i] = res.data.product_detail[i].specs
-            // this.details.cover[i] = res.data.product_detail[i].cover
+            this.details.cover[i] = res.data.product_detail[i].originCover
             this.details.warehousing_count[i] = res.data.product_detail[i].count
+            this.details.id[i] = res.data.product_detail[i].id
             this.coverList.push({
               name: res.data.pic_list[i].originCover,
               url: res.data.product_detail[i].cover,
@@ -639,6 +648,7 @@ export default {
           this.value.push(res.data.f_brand_id)
           this.value.push(res.data.s_brand_id)
           this.ueditor.setContent(res.data.detail)
+          this.addToform.allow_sale = res.data.allow_sale + ''
           // this.addForm.cover = res.data.cover
         } else {
           that.$Message.error(res.data.msg)
